@@ -12,7 +12,7 @@ namespace ConnectPoints.UI.LevelSelecion
         public void Setup(ushort level)
         {
             this.level = level;
-            levelText.text = level.ToString();
+            levelText.text = $"{level + 1}";
         }
     }
 }

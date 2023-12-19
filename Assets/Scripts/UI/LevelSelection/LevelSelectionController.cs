@@ -1,3 +1,5 @@
+using ConnectPoints.Gameplay.LevelSelecion;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,5 +16,55 @@ namespace ConnectPoints.UI.LevelSelecion
         [Header("Level option references")]
         [SerializeField] private LevelOption levelOptionPrefab;
         [SerializeField] private Transform levelOptionsContainer;
+
+        private ushort levelsPage = 0;
+
+        private void Awake()
+        {
+            GameManager.Instance.OnLevelsLoaded += OnLevelsLoaded;
+
+            levelsLeftButton.onClick.AddListener(() => ChangeLevelsPage(levelsPage--));
+            levelsRightButton.onClick.AddListener(() => ChangeLevelsPage(levelsPage++));
+        }
+
+        private void OnDestroy()
+        {
+            GameManager.Instance.OnLevelsLoaded -= OnLevelsLoaded;
+
+            levelsLeftButton.onClick.RemoveAllListeners();
+            levelsRightButton.onClick.RemoveAllListeners();
+        }
+
+        private void SpawnLevelOptions()
+        {
+            var levelDatas = GameManager.Instance.Levels.levels;
+
+            for (int i = levelsPage * maxLevelsCount; i < levelDatas.Count; i++)
+            {
+                if (i >= maxLevelsCount)
+                    break;
+
+                var levelOption = Instantiate(levelOptionPrefab, levelOptionsContainer);
+                levelOption.Setup((ushort)i);
+            }
+        }
+
+        private void ChangeLevelsPage(int page)
+        {
+            levelsPage = (ushort)Mathf.Clamp(page, 0, GameManager.Instance.Levels.levels.Count / maxLevelsCount);
+            SpawnLevelOptions();
+            SetupLevelsButtons();
+        }
+
+        private void SetupLevelsButtons()
+        {
+            levelsLeftButton.gameObject.SetActive(levelsPage > 0);
+            levelsRightButton.gameObject.SetActive(levelsPage < GameManager.Instance.Levels.levels.Count / maxLevelsCount);
+        }
+
+        private void OnLevelsLoaded()
+        {
+            ChangeLevelsPage(0);
+        }
     }
 }
