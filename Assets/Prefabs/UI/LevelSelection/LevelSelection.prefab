@@ -268,6 +268,7 @@ GameObject:
   - component: {fileID: 5288731307332916980}
   - component: {fileID: 4890740209531791404}
   - component: {fileID: 1050061113503596884}
+  - component: {fileID: 5694332515973299544}
   m_Layer: 5
   m_Name: LevelSelection
   m_TagString: Untagged
@@ -336,6 +337,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 2
+--- !u!114 &5694332515973299544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6367991667491007458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b56212f39f6510408223ba52689838c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxLevelsCount: 8
+  levelsLeftButton: {fileID: 5692791566740819421}
+  levelsRightButton: {fileID: 6363507637411194844}
+  levelOptionPrefab: {fileID: 4561356633631606103, guid: b1ce6e2c438a48745803c6fd65b0b1f9, type: 3}
+  levelOptionsContainer: {fileID: 9172752992486104021}
 --- !u!1 &8038482302315990609
 GameObject:
   m_ObjectHideFlags: 0
