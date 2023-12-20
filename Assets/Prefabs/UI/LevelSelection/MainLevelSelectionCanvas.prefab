@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 1184455679007023577}
   - component: {fileID: 213560203255373399}
   m_Layer: 5
-  m_Name: MainCanvas
+  m_Name: MainLevelSelectionCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

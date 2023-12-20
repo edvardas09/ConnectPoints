@@ -1,6 +1,7 @@
+using ConnectPoints.Gameplay.LevelSelecion;
 using UnityEngine.Events;
 
-namespace ConnectPoints.Gameplay.LevelSelecion
+namespace ConnectPoints.Gameplay.Managers
 {
     public class GameManager : MonoSingleton<GameManager>
     {

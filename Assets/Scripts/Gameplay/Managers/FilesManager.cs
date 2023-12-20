@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 using System.IO;
 using UnityEngine;
 
-namespace ConnectPoints.Gameplay.LevelSelecion
+namespace ConnectPoints.Gameplay.Managers
 {
     public static class FilesManager
     {

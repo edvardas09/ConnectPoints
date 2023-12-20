@@ -1,5 +1,4 @@
-using ConnectPoints.Gameplay.LevelSelecion;
-using System;
+using ConnectPoints.Gameplay.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,7 +18,7 @@ namespace ConnectPoints.UI.LevelSelecion
 
         private ushort levelsPage = 0;
 
-        private void Awake()
+        private void Start()
         {
             GameManager.Instance.OnLevelsLoaded += OnLevelsLoaded;
 
