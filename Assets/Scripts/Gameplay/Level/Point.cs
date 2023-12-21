@@ -12,6 +12,8 @@ namespace ConnectPoints.Gameplay.Level
         [SerializeField] private CanvasGroup initialStateObject;
         [SerializeField] private CanvasGroup pressedStateObject;
 
+        public PointData PointData => pointData;
+
         private PointData pointData;
 
         public void Initialize(PointData pointData)
@@ -22,6 +24,11 @@ namespace ConnectPoints.Gameplay.Level
             button.onClick.AddListener(OnButtonClick);
         }
 
+        public Vector3 GetPosition()
+        {
+            return initialStateObject.transform.position;
+        }
+
         private void OnDestroy()
         {
             button.onClick.RemoveListener(OnButtonClick);
@@ -29,7 +36,7 @@ namespace ConnectPoints.Gameplay.Level
 
         private void OnButtonClick()
         {
-            if (!LevelManager.Instance.IsCorrectPointPressed(pointData.Id))
+            if (!LevelManager.Instance.IsCorrectPointPressed(this))
             {
                 return;
             }

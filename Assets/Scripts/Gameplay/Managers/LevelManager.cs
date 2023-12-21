@@ -1,13 +1,15 @@
 using ConnectPoints.Gameplay.Level;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace ConnectPoints.Gameplay.Managers
 {
     public class LevelManager : MonoSingleton<LevelManager>
     {
+        public UnityAction<Point> PointPressed;
+
         public const string LevelSelectionSceneName = "LevelSelection";
         public const ushort PointPositionRefScale = 1000;
 
@@ -35,14 +37,22 @@ namespace ConnectPoints.Gameplay.Managers
             LoadSelectedLevel();
         }
 
-        public bool IsCorrectPointPressed(ushort pointId)
+        public bool IsCorrectPointPressed(Point point)
         {
-            var isCorrectPointPressed = pointId == currentPointId;
+            var isCorrectPointPressed = point.PointData.Id == currentPointId;
 
             if (isCorrectPointPressed)
+            {
                 currentPointId++;
+                PointPressed?.Invoke(point);
+            }
 
             return isCorrectPointPressed;
+        }
+
+        public bool IsLastPoint(Point point)
+        {
+            return pointDatas.Count - 1 == point.PointData.Id;
         }
 
         private void LoadSelectedLevel()
