@@ -1,16 +1,26 @@
 using ConnectPoints.Gameplay.Level;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace ConnectPoints.Gameplay.Managers
 {
-    public class LevelManager : MonoBehaviour
+    public class LevelManager : MonoSingleton<LevelManager>
     {
         public const string LevelSelectionSceneName = "LevelSelection";
+        public const ushort PointPositionRefScale = 1000;
+
+        [SerializeField] private Point pointPrefab;
+        [SerializeField] private Transform pointsParent;
 
         private ushort selectedLevel;
         private List<PointData> pointDatas = new();
+        private List<Point> spawnedPoints = new();
+
+        private ushort currentPointId = 0;
+
+        private Vector2 pointsParentTransformSize;
 
         private void Start()
         {
@@ -20,7 +30,19 @@ namespace ConnectPoints.Gameplay.Managers
                 return;
             }
 
+            pointsParentTransformSize = ((RectTransform)pointsParent.transform).sizeDelta;
+
             LoadSelectedLevel();
+        }
+
+        public bool IsCorrectPointPressed(ushort pointId)
+        {
+            var isCorrectPointPressed = pointId == currentPointId;
+
+            if (isCorrectPointPressed)
+                currentPointId++;
+
+            return isCorrectPointPressed;
         }
 
         private void LoadSelectedLevel()
@@ -36,6 +58,7 @@ namespace ConnectPoints.Gameplay.Managers
                 {
                     pointDatas.Add(new PointData
                     {
+                        Id = (ushort)pointDatas.Count,
                         PositionX = pointPosition,
                         PositionY = 0
                     });
@@ -44,7 +67,30 @@ namespace ConnectPoints.Gameplay.Managers
 
                 var lastPointData = pointDatas[^1];
                 lastPointData.PositionY = pointPosition;
+
+                SpawnPoint(lastPointData);
             }
+        }
+
+        private void SpawnPoint(PointData lastPointData)
+        {
+            var point = Instantiate(pointPrefab, pointsParent);
+            spawnedPoints.Add(point);
+            point.transform.SetAsFirstSibling();
+
+            var position = new Vector2(
+                ConvertPointPositionToScreenPosition(lastPointData.PositionX),
+                ConvertPointPositionToScreenPosition(lastPointData.PositionY) * -1
+                );
+
+            var rectTransform = (RectTransform)point.transform;
+            rectTransform.anchoredPosition = position;
+            point.Initialize(lastPointData);
+        }
+
+        private float ConvertPointPositionToScreenPosition(ushort pointPosition)
+        {
+            return (float)pointPosition / PointPositionRefScale * (pointsParentTransformSize.x - ((RectTransform)pointPrefab.transform).sizeDelta.x);
         }
     }
 }

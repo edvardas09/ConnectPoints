@@ -1,10 +1,13 @@
 using ConnectPoints.Gameplay.LevelSelecion;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace ConnectPoints.Gameplay.Managers
 {
     public class GameManager : MonoSingleton<GameManager>
     {
+        public const string GameplaySceneName = "Gameplay";
+
         public UnityAction OnLevelsLoaded;
 
         public ushort SelectedLevel => selectedLevel;
@@ -22,6 +25,11 @@ namespace ConnectPoints.Gameplay.Managers
         public void SetSelectedLevel(ushort level)
         {
             selectedLevel = level;
+        }
+
+        public void LoadSelectedLevel()
+        {
+            SceneManager.LoadScene(GameplaySceneName);
         }
     }
 }
