@@ -1,4 +1,6 @@
+using ConnectPoints.Gameplay.LevelSelecion;
 using ConnectPoints.Gameplay.Managers;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,10 +20,13 @@ namespace ConnectPoints.UI.LevelSelecion
 
         private ushort levelsPage = 0;
 
+        private List<LevelOption> spawnedLevelOptions = new();
+        private List<LevelData> levelDatas => GameManager.Instance.Levels.levels;
+
         private void Start()
         {
-            levelsLeftButton.onClick.AddListener(() => ChangeLevelsPage(levelsPage--));
-            levelsRightButton.onClick.AddListener(() => ChangeLevelsPage(levelsPage++));
+            levelsLeftButton.onClick.AddListener(() => ChangeLevelsPage(levelsPage - 1));
+            levelsRightButton.onClick.AddListener(() => ChangeLevelsPage(levelsPage + 1));
 
             ChangeLevelsPage(0);
         }
@@ -34,21 +39,27 @@ namespace ConnectPoints.UI.LevelSelecion
 
         private void SpawnLevelOptions()
         {
-            var levelDatas = GameManager.Instance.Levels.levels;
+            foreach (var levelOption in spawnedLevelOptions)
+            {
+                Destroy(levelOption.gameObject);
+            }
+
+            spawnedLevelOptions.Clear();
 
             for (int i = levelsPage * maxLevelsCount; i < levelDatas.Count; i++)
             {
-                if (i >= maxLevelsCount)
+                if (i >= (levelsPage + 1) * maxLevelsCount)
                     break;
 
                 var levelOption = Instantiate(levelOptionPrefab, levelOptionsContainer);
+                spawnedLevelOptions.Add(levelOption);
                 levelOption.Setup((ushort)i);
             }
         }
 
         private void ChangeLevelsPage(int page)
         {
-            levelsPage = (ushort)Mathf.Clamp(page, 0, GameManager.Instance.Levels.levels.Count / maxLevelsCount);
+            levelsPage = (ushort)Mathf.Clamp(page, 0, levelDatas.Count / maxLevelsCount);
             SpawnLevelOptions();
             SetupLevelsButtons();
         }
@@ -56,7 +67,7 @@ namespace ConnectPoints.UI.LevelSelecion
         private void SetupLevelsButtons()
         {
             levelsLeftButton.gameObject.SetActive(levelsPage > 0);
-            levelsRightButton.gameObject.SetActive(levelsPage < GameManager.Instance.Levels.levels.Count / maxLevelsCount);
+            levelsRightButton.gameObject.SetActive(levelsPage < levelDatas.Count / maxLevelsCount);
         }
     }
 }

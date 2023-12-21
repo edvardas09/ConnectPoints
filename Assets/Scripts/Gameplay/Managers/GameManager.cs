@@ -1,5 +1,4 @@
 using ConnectPoints.Gameplay.LevelSelecion;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace ConnectPoints.Gameplay.Managers

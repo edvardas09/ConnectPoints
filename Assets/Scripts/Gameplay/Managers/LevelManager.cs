@@ -33,11 +33,7 @@ namespace ConnectPoints.Gameplay.Managers
                 return;
             }
 
-            pointsParentTransformSize = ((RectTransform)pointsParent.transform).sizeDelta;
-
             LineManager.Instance.OnLevelCompleted += OnLevelCompleted;
-
-            LoadSelectedLevel();
         }
 
         private void OnDestroy()
@@ -63,10 +59,16 @@ namespace ConnectPoints.Gameplay.Managers
             return pointDatas.Count - 1 == point.PointData.Id;
         }
 
-        private void LoadSelectedLevel()
+        public void LoadSelectedLevel()
         {
+            if (GameManager.Instance == null)
+            {
+                return;
+            }
+
             pointDatas.Clear();
             selectedLevel = GameManager.Instance.SelectedLevel;
+            pointsParentTransformSize = ((RectTransform)pointsParent.transform).sizeDelta;
 
             for (int i = 0; i < GameManager.Instance.Levels.levels[selectedLevel].pointPositions.Count; i++)
             {
