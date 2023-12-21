@@ -15,6 +15,7 @@ namespace ConnectPoints.Gameplay.Managers
 
         [SerializeField] private Point pointPrefab;
         [SerializeField] private Transform pointsParent;
+        [SerializeField] private GameObject levelCompletedObject;
 
         private ushort selectedLevel;
         private List<PointData> pointDatas = new();
@@ -34,7 +35,14 @@ namespace ConnectPoints.Gameplay.Managers
 
             pointsParentTransformSize = ((RectTransform)pointsParent.transform).sizeDelta;
 
+            LineManager.Instance.OnLevelCompleted += OnLevelCompleted;
+
             LoadSelectedLevel();
+        }
+
+        private void OnDestroy()
+        {
+            LineManager.Instance.OnLevelCompleted -= OnLevelCompleted;
         }
 
         public bool IsCorrectPointPressed(Point point)
@@ -101,6 +109,23 @@ namespace ConnectPoints.Gameplay.Managers
         private float ConvertPointPositionToScreenPosition(ushort pointPosition)
         {
             return (float)pointPosition / PointPositionRefScale * (pointsParentTransformSize.x - ((RectTransform)pointPrefab.transform).sizeDelta.x);
+        }
+
+        private void OnLevelCompleted()
+        {
+            var newPosition = levelCompletedObject.transform.position;
+            newPosition.y = ((RectTransform)pointsParent.transform).sizeDelta.y * -1;
+            levelCompletedObject.transform.position = newPosition;
+
+            levelCompletedObject.SetActive(true);
+
+            LeanTween.moveLocalY(levelCompletedObject, 0f, 0.5f).setEase(LeanTweenType.easeInOutQuad).setOnComplete(() =>
+            {
+                LeanTween.moveLocalY(levelCompletedObject, ((RectTransform)pointsParent.transform).sizeDelta.y * -2, 0.5f).setEase(LeanTweenType.easeInOutQuad).setDelay(1f).setOnComplete(() =>
+                {
+                    SceneManager.LoadScene(LevelSelectionSceneName, LoadSceneMode.Single);
+                });
+            });
         }
     }
 }

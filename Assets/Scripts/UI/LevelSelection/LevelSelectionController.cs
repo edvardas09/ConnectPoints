@@ -20,16 +20,14 @@ namespace ConnectPoints.UI.LevelSelecion
 
         private void Start()
         {
-            GameManager.Instance.OnLevelsLoaded += OnLevelsLoaded;
-
             levelsLeftButton.onClick.AddListener(() => ChangeLevelsPage(levelsPage--));
             levelsRightButton.onClick.AddListener(() => ChangeLevelsPage(levelsPage++));
+
+            ChangeLevelsPage(0);
         }
 
         private void OnDestroy()
         {
-            GameManager.Instance.OnLevelsLoaded -= OnLevelsLoaded;
-
             levelsLeftButton.onClick.RemoveAllListeners();
             levelsRightButton.onClick.RemoveAllListeners();
         }
@@ -59,11 +57,6 @@ namespace ConnectPoints.UI.LevelSelecion
         {
             levelsLeftButton.gameObject.SetActive(levelsPage > 0);
             levelsRightButton.gameObject.SetActive(levelsPage < GameManager.Instance.Levels.levels.Count / maxLevelsCount);
-        }
-
-        private void OnLevelsLoaded()
-        {
-            ChangeLevelsPage(0);
         }
     }
 }

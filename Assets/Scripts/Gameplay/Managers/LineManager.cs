@@ -77,7 +77,7 @@ namespace ConnectPoints.Gameplay.Managers
             var lineSize = new Vector2(line.rectTransform.sizeDelta.x, Vector2.Distance(toPoint.GetPosition(), fromPoint.GetPosition()) / mainCanvas.localScale.x);
             LeanTween.size(line.rectTransform, lineSize, 0.5f).setEase(LeanTweenType.easeInOutQuad).setOnComplete(() =>
             {
-                if (LevelManager.Instance.IsLastPoint(toPoint))
+                if (firstPoint == toPoint)
                 {
                     OnLevelCompleted?.Invoke();
                     return;

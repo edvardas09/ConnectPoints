@@ -8,18 +8,17 @@ namespace ConnectPoints.Gameplay.Managers
     {
         public const string GameplaySceneName = "Gameplay";
 
-        public UnityAction OnLevelsLoaded;
-
         public ushort SelectedLevel => selectedLevel;
         public Levels Levels => levels;
 
         private ushort selectedLevel;
         private Levels levels;
 
-        private void Start()
+        protected override void Awake()
         {
+            base.Awake();
+
             levels = FilesManager.GetFileContent<Levels>(FilesManager.LevelsPath);
-            OnLevelsLoaded?.Invoke();
         }
 
         public void SetSelectedLevel(ushort level)
@@ -29,7 +28,7 @@ namespace ConnectPoints.Gameplay.Managers
 
         public void LoadSelectedLevel()
         {
-            SceneManager.LoadScene(GameplaySceneName);
+            SceneManager.LoadScene(GameplaySceneName, LoadSceneMode.Single);
         }
     }
 }

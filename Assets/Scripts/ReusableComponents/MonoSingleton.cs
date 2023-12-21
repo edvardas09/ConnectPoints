@@ -14,7 +14,6 @@ namespace ConnectPoints
             }
             if (Instance != null)
             {
-                Debug.LogError($"Multiple MonoSingletons detected. Deleting {transform.name}.", this);
                 Destroy(gameObject);
                 return;
             }
