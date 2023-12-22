@@ -8,6 +8,7 @@ namespace ConnectPoints.Gameplay.Level
         [SerializeField] private RectTransform mainCanvas;
         [SerializeField] private float paddingFromScreenBorder = 100f;
 
+        //TODO: onResolutionChange reinitialize proportions
         private void Start()
         {
             var width = mainCanvas.rect.width;

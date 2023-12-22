@@ -1,12 +1,15 @@
 using ConnectPoints.Gameplay.Managers;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace ConnectPoints.Gameplay.Level
 {
-    public class Point : MonoBehaviour
+    public class Point : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
+        private const float onHoverScale = 1.2f;
+
         [SerializeField] private Button button;
         [SerializeField] private TextMeshProUGUI idText;
         [SerializeField] private CanvasGroup initialStateObject;
@@ -29,6 +32,28 @@ namespace ConnectPoints.Gameplay.Level
             return initialStateObject.transform.position;
         }
 
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!initialStateObject.isActiveAndEnabled)
+            {
+                return;
+            }
+
+            LeanTween.cancel(initialStateObject.gameObject);
+            LeanTween.scale(initialStateObject.gameObject, Vector3.one, 0.2f);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (!initialStateObject.isActiveAndEnabled)
+            {
+                return;
+            }
+
+            LeanTween.cancel(initialStateObject.gameObject);
+            LeanTween.scale(initialStateObject.gameObject, new Vector3(onHoverScale, onHoverScale), 0.2f);
+        }
+
         private void OnDestroy()
         {
             button.onClick.RemoveListener(OnButtonClick);
@@ -43,13 +68,15 @@ namespace ConnectPoints.Gameplay.Level
 
             button.onClick.RemoveListener(OnButtonClick);
 
-            LeanTween.alphaCanvas(initialStateObject, 0f, 0.2f).setOnComplete(() =>
-            {
-                initialStateObject.gameObject.SetActive(false);
-            });
+            LeanTween.cancel(initialStateObject.gameObject);
+            LeanTween.scale(initialStateObject.gameObject, Vector3.one, 0.2f);
 
             pressedStateObject.gameObject.SetActive(true);
-            LeanTween.alphaCanvas(pressedStateObject, 1f, 0.2f);
+            LeanTween.alphaCanvas(pressedStateObject, 1f, 0.2f).setOnComplete(() =>
+            {
+                initialStateObject.gameObject.SetActive(false);
+                initialStateObject.alpha = 0f;
+            });
 
             transform.SetAsFirstSibling();
         }

@@ -72,9 +72,13 @@ namespace ConnectPoints.Gameplay.Managers
         {
             var line = Instantiate(linePrefab, linesParent);
             line.transform.position = fromPoint.GetPosition();
-            line.rectTransform.rotation = Quaternion.Euler(0f, 0f, Vector2.SignedAngle(Vector2.up, toPoint.GetPosition() - fromPoint.GetPosition()));
 
-            var lineSize = new Vector2(line.rectTransform.sizeDelta.x, Vector2.Distance(toPoint.GetPosition(), fromPoint.GetPosition()) / mainCanvas.localScale.x);
+            var rotationToTarget = Vector2.SignedAngle(Vector2.up, toPoint.GetPosition() - fromPoint.GetPosition());
+            line.rectTransform.rotation = Quaternion.Euler(0f, 0f, rotationToTarget);
+
+            var lineSizeX = line.rectTransform.sizeDelta.x;
+            var lineSizeY = Vector2.Distance(toPoint.GetPosition(), fromPoint.GetPosition()) / mainCanvas.localScale.x;
+            var lineSize = new Vector2(lineSizeX, lineSizeY);
             LeanTween.size(line.rectTransform, lineSize, 0.5f).setEase(LeanTweenType.easeInOutQuad).setOnComplete(() =>
             {
                 if (firstPoint == toPoint)
