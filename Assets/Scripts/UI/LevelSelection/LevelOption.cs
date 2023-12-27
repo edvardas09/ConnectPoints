@@ -17,6 +17,11 @@ namespace ConnectPoints.UI.LevelSelecion
             button.onClick.AddListener(OnLevelSelected);
         }
 
+        private void OnDestroy()
+        {
+            button.onClick.RemoveListener(OnLevelSelected);
+        }
+
         public void Setup(ushort level)
         {
             this.level = level;

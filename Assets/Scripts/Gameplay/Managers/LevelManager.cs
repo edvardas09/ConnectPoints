@@ -70,9 +70,11 @@ namespace ConnectPoints.Gameplay.Managers
             selectedLevel = GameManager.Instance.SelectedLevel;
             pointsParentTransformSize = ((RectTransform)pointsParent.transform).sizeDelta;
 
-            for (int i = 0; i < GameManager.Instance.Levels.levels[selectedLevel].pointPositions.Count; i++)
+            var selectedLevelPointPositions = GameManager.Instance.Levels.levels[selectedLevel].pointPositions;
+
+            for (int i = 0; i < selectedLevelPointPositions.Count; i++)
             {
-                ushort pointPosition = GameManager.Instance.Levels.levels[selectedLevel].pointPositions[i];
+                ushort pointPosition = selectedLevelPointPositions[i];
 
                 if (i % 2 == 0)
                 {

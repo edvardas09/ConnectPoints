@@ -1,13 +1,10 @@
 using Newtonsoft.Json;
 using System.IO;
-using UnityEngine;
 
-namespace ConnectPoints.Gameplay.Managers
+namespace ConnectPoints.Managers
 {
     public static class FilesManager
     {
-        public static string LevelsPath => $"{Application.streamingAssetsPath}/level_data.json";
-
         public static T GetFileContent<T>(string path)
         {
             string json = File.ReadAllText(path);
