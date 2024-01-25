@@ -20,7 +20,7 @@ namespace ConnectPoints.UI.LevelSelecion
 
         private ushort levelsPage = 0;
 
-        private List<LevelOption> spawnedLevelOptions = new();
+        private List<LevelOption> spawnedLevelOptions = new List<LevelOption>();
         private List<LevelData> levelDataList => GameManager.Instance.Levels.levels;
 
         private void Start()

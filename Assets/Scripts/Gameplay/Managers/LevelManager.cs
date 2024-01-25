@@ -1,8 +1,8 @@
-using ConnectPoints.Gameplay.Level;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using ConnectPoints.Gameplay.Level;
 
 namespace ConnectPoints.Gameplay.Managers
 {
@@ -10,26 +10,29 @@ namespace ConnectPoints.Gameplay.Managers
     {
         public UnityAction<Point> PointPressed;
 
-        public const string LevelSelectionSceneName = "LevelSelection";
-        public const ushort PointPositionRefScale = 1000;
+        public const string LEVEL_SELECTION_SCENE_NAME  = "LevelSelection";
+        public const ushort POINT_POSITION_REF_SCALE    = 1000;
 
         [SerializeField] private Point pointPrefab;
         [SerializeField] private Transform pointsParent;
         [SerializeField] private GameObject levelCompletedObject;
 
-        private ushort selectedLevel;
-        private List<PointData> pointDatas = new();
-        private List<Point> spawnedPoints = new();
+        private List<PointData> pointDatas = new List<PointData>();
 
-        private ushort currentPointId = 0;
+        private int selectedLevel;
+        private int currentPointId;
+        private float maxSize;
 
-        private Vector2 pointsParentTransformSize;
+        public LevelManager()
+        {
+            currentPointId = 0;
+        }
 
         private void Start()
         {
             if (GameManager.Instance == null)
             {
-                SceneManager.LoadScene(LevelSelectionSceneName);
+                SceneManager.LoadScene(LEVEL_SELECTION_SCENE_NAME);
                 return;
             }
 
@@ -43,15 +46,15 @@ namespace ConnectPoints.Gameplay.Managers
 
         public bool IsCorrectPointPressed(Point point)
         {
-            var isCorrectPointPressed = point.PointData.Id == currentPointId;
+            bool _isCorrectPointPressed = point.PointData.Id == currentPointId;
 
-            if (isCorrectPointPressed)
+            if (_isCorrectPointPressed)
             {
                 currentPointId++;
                 PointPressed?.Invoke(point);
             }
 
-            return isCorrectPointPressed;
+            return _isCorrectPointPressed;
         }
 
         public bool IsLastPoint(Point point)
@@ -66,60 +69,75 @@ namespace ConnectPoints.Gameplay.Managers
                 return;
             }
 
+            Rect _screenRect = GetScreenWorldRect(Camera.main);
+            maxSize = _screenRect.height > _screenRect.width ? _screenRect.width : _screenRect.height;
+
             pointDatas.Clear();
             selectedLevel = GameManager.Instance.SelectedLevel;
-            pointsParentTransformSize = ((RectTransform)pointsParent.transform).sizeDelta;
 
-            var selectedLevelPointPositions = GameManager.Instance.Levels.levels[selectedLevel].pointPositions;
-
-            for (int i = 0; i < selectedLevelPointPositions.Count; i++)
+            List<int> _selectedLevelPointPositions = GameManager.Instance.Levels.levels[selectedLevel].pointPositions;
+            for (int i = 0; i < _selectedLevelPointPositions.Count; i++)
             {
-                ushort pointPosition = selectedLevelPointPositions[i];
+                int _pointPosition = _selectedLevelPointPositions[i];
 
                 if (i % 2 == 0)
                 {
                     pointDatas.Add(new PointData
                     {
-                        Id = (ushort)pointDatas.Count,
-                        PositionX = pointPosition,
+                        Id = pointDatas.Count,
+                        PositionX = _pointPosition,
                         PositionY = 0
                     });
                     continue;
                 }
 
-                var lastPointData = pointDatas[^1];
-                lastPointData.PositionY = pointPosition;
+                PointData _lastPointData = pointDatas[pointDatas.Count - 1];
+                _lastPointData.PositionY = _pointPosition;
 
-                SpawnPoint(lastPointData);
+                SpawnPoint(_lastPointData);
             }
+
+            UpdateParentPosition();
         }
 
         private void SpawnPoint(PointData lastPointData)
         {
-            var point = Instantiate(pointPrefab, pointsParent);
-            spawnedPoints.Add(point);
-            point.transform.SetAsFirstSibling();
+            Point _point = Instantiate(pointPrefab, pointsParent);
+            _point.transform.SetAsFirstSibling();
 
-            var position = new Vector2(
+            Vector2 _position = new Vector2(
                 ConvertPointPositionToScreenPosition(lastPointData.PositionX),
                 ConvertPointPositionToScreenPosition(lastPointData.PositionY) * -1
                 );
 
-            var rectTransform = (RectTransform)point.transform;
-            rectTransform.anchoredPosition = position;
-            point.Initialize(lastPointData);
+            _point.transform.position = _position;
+            _point.Initialize(lastPointData);
         }
 
-        private float ConvertPointPositionToScreenPosition(ushort pointPosition)
+        private float ConvertPointPositionToScreenPosition(int pointPosition)
         {
-            return (float)pointPosition / PointPositionRefScale * (pointsParentTransformSize.x - ((RectTransform)pointPrefab.transform).sizeDelta.x);
+            return (float)pointPosition / POINT_POSITION_REF_SCALE * maxSize;
+        }
+
+        private Rect GetScreenWorldRect(Camera value)
+        {
+            Vector3 bottomLeft = value.ViewportToWorldPoint(new Vector3(0f, 0f, 0f));
+            Vector3 topRight = value.ViewportToWorldPoint(new Vector3(1f, 1f, 0f));
+            return (new Rect(bottomLeft.x, bottomLeft.y, topRight.x * 2f, topRight.y * 2f));
+        }
+
+        private void UpdateParentPosition()
+        {
+            float _halfMaxSize = maxSize / 2;
+            Vector2 _topRight = new Vector2(-_halfMaxSize, _halfMaxSize);
+            pointsParent.position = _topRight;
         }
 
         private void OnLevelCompleted()
         {
-            var newPosition = levelCompletedObject.transform.position;
-            newPosition.y = ((RectTransform)pointsParent.transform).sizeDelta.y * -1;
-            levelCompletedObject.transform.position = newPosition;
+            Vector3 _newPosition = levelCompletedObject.transform.position;
+            _newPosition.y = ((RectTransform)pointsParent.transform).sizeDelta.y * -1;
+            levelCompletedObject.transform.position = _newPosition;
 
             levelCompletedObject.SetActive(true);
 
@@ -127,9 +145,10 @@ namespace ConnectPoints.Gameplay.Managers
             {
                 LeanTween.moveLocalY(levelCompletedObject, ((RectTransform)pointsParent.transform).sizeDelta.y * -2, 0.5f).setEase(LeanTweenType.easeInOutQuad).setDelay(1f).setOnComplete(() =>
                 {
-                    SceneManager.LoadScene(LevelSelectionSceneName, LoadSceneMode.Single);
+                    SceneManager.LoadScene(LEVEL_SELECTION_SCENE_NAME, LoadSceneMode.Single);
                 });
             });
         }
+
     }
 }

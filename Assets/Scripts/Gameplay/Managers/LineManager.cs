@@ -16,7 +16,7 @@ namespace ConnectPoints.Gameplay.Managers
 
         private Point firstPoint;
         private Point lastPoint;
-        private List<Point> pointsToDrawLineTo = new();
+        private List<Point> pointsToDrawLineTo = new List<Point>();
 
         private void Start()
         {

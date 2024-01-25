@@ -1,84 +1,73 @@
-using ConnectPoints.Gameplay.Managers;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
+using TMPro;
+using ConnectPoints.Gameplay.Managers;
 
 namespace ConnectPoints.Gameplay.Level
 {
-    public class Point : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class Point : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
-        private const float onHoverScale = 1.2f;
-
-        [SerializeField] private Button button;
+        [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private TextMeshProUGUI idText;
-        [SerializeField] private CanvasGroup initialStateObject;
-        [SerializeField] private CanvasGroup pressedStateObject;
+        [SerializeField] private Sprite pressedSprite;
+
+        [Header("Animation")]
+        [SerializeField] private float onHoverScaleIncrease = 0.1f;
+        [SerializeField] private float scaleAnimationDuration = 0.2f;
 
         public PointData PointData => pointData;
 
         private PointData pointData;
+        private bool isPressed;
+        private Vector2 defaultScale;
 
         public void Initialize(PointData pointData)
         {
             this.pointData = pointData;
+            defaultScale = gameObject.transform.localScale;
 
             idText.text = $"{pointData.Id + 1}";
-            button.onClick.AddListener(OnButtonClick);
+            gameObject.SetActive(true);
         }
 
         public Vector3 GetPosition()
         {
-            return initialStateObject.transform.position;
+            return transform.position;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (!initialStateObject.isActiveAndEnabled)
+            if (isPressed)
             {
                 return;
             }
 
-            LeanTween.cancel(initialStateObject.gameObject);
-            LeanTween.scale(initialStateObject.gameObject, Vector3.one, 0.2f);
+            LeanTween.cancel(gameObject);
+            LeanTween.scale(gameObject, defaultScale, scaleAnimationDuration);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (!initialStateObject.isActiveAndEnabled)
+            if (isPressed)
             {
                 return;
             }
 
-            LeanTween.cancel(initialStateObject.gameObject);
-            LeanTween.scale(initialStateObject.gameObject, new Vector3(onHoverScale, onHoverScale), 0.2f);
+            LeanTween.cancel(gameObject);
+            LeanTween.scale(gameObject, new Vector2(defaultScale.x + onHoverScaleIncrease, defaultScale.y + onHoverScaleIncrease), scaleAnimationDuration);
         }
 
-        private void OnDestroy()
+        public void OnPointerClick(PointerEventData _)
         {
-            button.onClick.RemoveListener(OnButtonClick);
-        }
-
-        private void OnButtonClick()
-        {
-            if (!LevelManager.Instance.IsCorrectPointPressed(this))
+            if (isPressed || !LevelManager.Instance.IsCorrectPointPressed(this))
             {
                 return;
             }
 
-            button.onClick.RemoveListener(OnButtonClick);
+            LeanTween.cancel(gameObject);
+            LeanTween.scale(gameObject, defaultScale, scaleAnimationDuration);
 
-            LeanTween.cancel(initialStateObject.gameObject);
-            LeanTween.scale(initialStateObject.gameObject, Vector3.one, 0.2f);
-
-            pressedStateObject.gameObject.SetActive(true);
-            LeanTween.alphaCanvas(pressedStateObject, 1f, 0.2f).setOnComplete(() =>
-            {
-                initialStateObject.gameObject.SetActive(false);
-                initialStateObject.alpha = 0f;
-            });
-
-            transform.SetAsFirstSibling();
+            spriteRenderer.sprite = pressedSprite;
         }
     }
 }

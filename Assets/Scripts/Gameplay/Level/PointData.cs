@@ -2,8 +2,8 @@ namespace ConnectPoints.Gameplay.Level
 {
     public struct PointData
     {
-        public ushort Id;
-        public ushort PositionX;
-        public ushort PositionY;
+        public int Id;
+        public int PositionX;
+        public int PositionY;
     }
 }
