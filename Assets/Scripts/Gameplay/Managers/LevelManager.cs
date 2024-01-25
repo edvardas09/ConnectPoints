@@ -16,6 +16,7 @@ namespace ConnectPoints.Gameplay.Managers
         [SerializeField] private Point pointPrefab;
         [SerializeField] private Transform pointsParent;
         [SerializeField] private GameObject levelCompletedObject;
+        [SerializeField] private float paddingFromSides = 1f;
 
         private List<PointData> pointDatas = new List<PointData>();
 
@@ -71,6 +72,7 @@ namespace ConnectPoints.Gameplay.Managers
 
             Rect _screenRect = GetScreenWorldRect(Camera.main);
             maxSize = _screenRect.height > _screenRect.width ? _screenRect.width : _screenRect.height;
+            maxSize -= paddingFromSides * 2;
 
             pointDatas.Clear();
             selectedLevel = GameManager.Instance.SelectedLevel;
