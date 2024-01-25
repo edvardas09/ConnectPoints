@@ -6,26 +6,33 @@ using UnityEngine.UI;
 
 namespace ConnectPoints.Gameplay.Managers
 {
-    public class LineManager : MonoSingleton<LineManager>
+    public class LineManager : MonoBehaviour
     {
         public UnityAction OnLevelCompleted;
 
         [SerializeField] private Image linePrefab;
         [SerializeField] private Transform linesParent;
         [SerializeField] private Transform mainCanvas;
+        [SerializeField] private LevelManager levelManager;
+        [SerializeField] private float lineDrawDuration = 0.5f;
 
         private Point firstPoint;
         private Point lastPoint;
-        private List<Point> pointsToDrawLineTo = new List<Point>();
+        private Queue<Point> pointsToDrawLineTo = new Queue<Point>();
 
-        private void Start()
+        private void OnEnable()
         {
-            LevelManager.Instance.PointPressed += OnPointClicked;
+            levelManager.PointPressed += OnPointClicked;
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
-            LevelManager.Instance.PointPressed -= OnPointClicked;
+            levelManager.PointPressed -= OnPointClicked;
+        }
+
+        public void AddLastPointToDrawLine()
+        {
+            pointsToDrawLineTo.Enqueue(firstPoint);
         }
 
         private void OnPointClicked(Point point)
@@ -42,7 +49,7 @@ namespace ConnectPoints.Gameplay.Managers
                 return;
             }
 
-            pointsToDrawLineTo.Add(point);
+            pointsToDrawLineTo.Enqueue(point);
 
             if (pointsToDrawLineTo.Count == 1)
             {
@@ -57,29 +64,24 @@ namespace ConnectPoints.Gameplay.Managers
                 return;
             }
 
-            var point = pointsToDrawLineTo[0];
-            DrawLine(lastPoint, point);
+            Point _point = pointsToDrawLineTo.Dequeue();
+            DrawLine(lastPoint, _point);
 
-            lastPoint = point;
-
-            if (LevelManager.Instance.IsLastPoint(point))
-            {
-                pointsToDrawLineTo.Add(firstPoint);
-            }
+            lastPoint = _point;
         }
 
         private void DrawLine(Point fromPoint, Point toPoint)
         {
-            var line = Instantiate(linePrefab, linesParent);
-            line.transform.position = fromPoint.GetPosition();
+            Image _line = Instantiate(linePrefab, linesParent);
+            _line.transform.position = fromPoint.GetPosition();
 
-            var rotationToTarget = Vector2.SignedAngle(Vector2.up, toPoint.GetPosition() - fromPoint.GetPosition());
-            line.rectTransform.rotation = Quaternion.Euler(0f, 0f, rotationToTarget);
+            float _rotationToTarget = Vector2.SignedAngle(Vector2.up, toPoint.GetPosition() - fromPoint.GetPosition());
+            _line.rectTransform.rotation = Quaternion.Euler(0f, 0f, _rotationToTarget);
 
-            var lineSizeX = line.rectTransform.sizeDelta.x;
-            var lineSizeY = Vector2.Distance(toPoint.GetPosition(), fromPoint.GetPosition()) / mainCanvas.localScale.x;
-            var lineSize = new Vector2(lineSizeX, lineSizeY);
-            LeanTween.size(line.rectTransform, lineSize, 0.5f).setEase(LeanTweenType.easeInOutQuad).setOnComplete(() =>
+            float _lineSizeX = _line.rectTransform.sizeDelta.x;
+            float _lineSizeY = Vector2.Distance(toPoint.GetPosition(), fromPoint.GetPosition()) / mainCanvas.localScale.x;
+            Vector2 _lineSize = new Vector2(_lineSizeX, _lineSizeY);
+            LeanTween.size(_line.rectTransform, _lineSize, lineDrawDuration).setEase(LeanTweenType.easeInOutQuad).setOnComplete(() =>
             {
                 if (firstPoint == toPoint)
                 {
@@ -87,7 +89,6 @@ namespace ConnectPoints.Gameplay.Managers
                     return;
                 }
 
-                pointsToDrawLineTo.RemoveAt(0);
                 DrawNewLine();
             });
         }

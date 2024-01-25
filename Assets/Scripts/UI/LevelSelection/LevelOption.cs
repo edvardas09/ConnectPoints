@@ -10,19 +10,19 @@ namespace ConnectPoints.UI.LevelSelecion
         [SerializeField] private TextMeshProUGUI levelText;
         [SerializeField] private Button button;
 
-        private ushort level;
+        private int level;
 
-        private void Start()
+        private void OnEnable()
         {
             button.onClick.AddListener(OnLevelSelected);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             button.onClick.RemoveListener(OnLevelSelected);
         }
 
-        public void Setup(ushort level)
+        public void Setup(int level)
         {
             this.level = level;
             levelText.text = $"{level + 1}";

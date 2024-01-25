@@ -8,7 +8,7 @@ namespace ConnectPoints.UI.LevelSelecion
 {
     public class LevelSelectionController : MonoBehaviour
     {
-        [SerializeField] private ushort maxLevelsCount;
+        [SerializeField] private int maxLevelsCount;
 
         [Header("UI references")]
         [SerializeField] private Button levelsLeftButton;
@@ -18,12 +18,12 @@ namespace ConnectPoints.UI.LevelSelecion
         [SerializeField] private LevelOption levelOptionPrefab;
         [SerializeField] private Transform levelOptionsContainer;
 
-        private ushort levelsPage = 0;
+        private int levelsPage = 0;
 
         private List<LevelOption> spawnedLevelOptions = new List<LevelOption>();
-        private List<LevelData> levelDataList => GameManager.Instance.Levels.levels;
+        private List<LevelData> levelDataList => GameManager.Instance.Levels.LevelDataList;
 
-        private void Start()
+        private void OnEnable()
         {
             levelsLeftButton.onClick.AddListener(OnLevelsLeftButtonClicked);
             levelsRightButton.onClick.AddListener(OnLevelsRightButtonClicked);
@@ -31,7 +31,7 @@ namespace ConnectPoints.UI.LevelSelecion
             SetLevelsPage(0);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             levelsLeftButton.onClick.RemoveListener(OnLevelsLeftButtonClicked);
             levelsRightButton.onClick.RemoveListener(OnLevelsRightButtonClicked);
@@ -43,22 +43,22 @@ namespace ConnectPoints.UI.LevelSelecion
 
             spawnedLevelOptions.Clear();
 
-            var startIndex = levelsPage * maxLevelsCount;
-            var endIndex = Mathf.Min((levelsPage + 1) * maxLevelsCount, levelDataList.Count);
+            int _startIndex = levelsPage * maxLevelsCount;
+            int _endIndex = Mathf.Min((levelsPage + 1) * maxLevelsCount, levelDataList.Count);
 
-            for (int i = startIndex; i < endIndex; i++)
+            for (int i = _startIndex; i < _endIndex; i++)
             {
-                var levelOption = Instantiate(levelOptionPrefab, levelOptionsContainer);
-                spawnedLevelOptions.Add(levelOption);
-                levelOption.Setup((ushort)i);
+                LevelOption _levelOption = Instantiate(levelOptionPrefab, levelOptionsContainer);
+                spawnedLevelOptions.Add(_levelOption);
+                _levelOption.Setup(i);
             }
         }
 
         private void DespawnLevelOptions()
         {
-            foreach (var levelOption in spawnedLevelOptions)
+            foreach (LevelOption _levelOption in spawnedLevelOptions)
             {
-                Destroy(levelOption.gameObject);
+                Destroy(_levelOption.gameObject);
             }
         }
 
@@ -74,7 +74,7 @@ namespace ConnectPoints.UI.LevelSelecion
 
         private void SetLevelsPage(int page)
         {
-            levelsPage = (ushort)Mathf.Clamp(page, 0, levelDataList.Count / maxLevelsCount);
+            levelsPage = Mathf.Clamp(page, 0, levelDataList.Count / maxLevelsCount);
             SpawnLevelOptions();
             SetupLevelsButtons();
         }

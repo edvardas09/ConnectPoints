@@ -5,6 +5,6 @@ namespace ConnectPoints.Gameplay.LevelSelecion
 {
     public class Levels
     {
-        [JsonProperty("levels")] public List<LevelData> levels;
+        [JsonProperty("levels")] public List<LevelData> LevelDataList;
     }
 }

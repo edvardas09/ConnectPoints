@@ -246,6 +246,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 860440704490725890, guid: f7c7a442b395a154296fec9276de6dcb, type: 3}
   m_PrefabInstance: {fileID: 5541332084464998677}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1831219525 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2070589166820868718, guid: 9eb829dfbd9bdb5419dbf7c0dca17785, type: 3}
+  m_PrefabInstance: {fileID: 8322767404764133939}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 953390404aa15e44fbc1bef2cb4fd5bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1978701094
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,9 +542,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 707401632}
     - target: {fileID: 5394166012276425104, guid: 9eb829dfbd9bdb5419dbf7c0dca17785, type: 3}
+      propertyPath: lineManager
+      value: 
+      objectReference: {fileID: 1831219525}
+    - target: {fileID: 5394166012276425104, guid: 9eb829dfbd9bdb5419dbf7c0dca17785, type: 3}
       propertyPath: pointPrefab
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5873366168244853980, guid: 7ca9eba452c186e4da5e1c22c48be73e, type: 3}
     - target: {fileID: 5394166012276425104, guid: 9eb829dfbd9bdb5419dbf7c0dca17785, type: 3}
       propertyPath: pointsParent
       value: 

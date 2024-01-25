@@ -1,12 +1,14 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
-using ConnectPoints.Gameplay.Managers;
+using UnityEngine.Events;
 
 namespace ConnectPoints.Gameplay.Level
 {
     public class Point : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
+        public UnityAction<Point> OnPointClicked;
+
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private TextMeshProUGUI idText;
         [SerializeField] private Sprite pressedSprite;
@@ -27,7 +29,6 @@ namespace ConnectPoints.Gameplay.Level
             defaultScale = gameObject.transform.localScale;
 
             idText.text = $"{pointData.Id + 1}";
-            gameObject.SetActive(true);
         }
 
         public Vector3 GetPosition()
@@ -59,10 +60,12 @@ namespace ConnectPoints.Gameplay.Level
 
         public void OnPointerClick(PointerEventData _)
         {
-            if (isPressed || !LevelManager.Instance.IsCorrectPointPressed(this))
-            {
-                return;
-            }
+            OnPointClicked?.Invoke(this);
+        }
+
+        public void PointPressed()
+        {
+            isPressed = true;
 
             LeanTween.cancel(gameObject);
             LeanTween.scale(gameObject, defaultScale, scaleAnimationDuration);
