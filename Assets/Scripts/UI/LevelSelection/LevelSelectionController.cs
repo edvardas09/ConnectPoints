@@ -20,15 +20,24 @@ namespace ConnectPoints.UI.LevelSelecion
 
         private int levelsPage = 0;
 
-        private List<LevelOption> spawnedLevelOptions = new List<LevelOption>();
-        private List<LevelData> levelDataList => GameManager.Instance.Levels.LevelDataList;
+        private List<LevelOption> spawnedLevelOptions;
+        private List<LevelData> levelDataList;
+
+        public LevelSelectionController()
+        {
+            spawnedLevelOptions = new List<LevelOption>();
+        }
+
+        private void Start()
+        {
+            levelDataList = DataManager.Instance.Levels.LevelDataList;
+            SetLevelsPage(0);
+        }
 
         private void OnEnable()
         {
             levelsLeftButton.onClick.AddListener(OnLevelsLeftButtonClicked);
             levelsRightButton.onClick.AddListener(OnLevelsRightButtonClicked);
-
-            SetLevelsPage(0);
         }
 
         private void OnDisable()

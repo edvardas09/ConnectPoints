@@ -71,6 +71,8 @@ namespace ConnectPoints.Gameplay.Level
             LeanTween.scale(gameObject, defaultScale, scaleAnimationDuration);
 
             spriteRenderer.sprite = pressedSprite;
+            spriteRenderer.sortingOrder--;
+            idText.gameObject.SetActive(false);
         }
     }
 }

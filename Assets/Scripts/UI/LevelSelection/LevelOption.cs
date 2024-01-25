@@ -30,8 +30,8 @@ namespace ConnectPoints.UI.LevelSelecion
 
         private void OnLevelSelected()
         {
-            GameManager.Instance.SetSelectedLevel(level);
-            GameManager.Instance.LoadSelectedLevel();
+            DataManager.Instance.SetSelectedLevel(level);
+            DataManager.Instance.LoadSelectedLevel();
         }
     }
 }

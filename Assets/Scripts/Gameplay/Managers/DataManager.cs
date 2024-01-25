@@ -5,7 +5,7 @@ using ConnectPoints.Managers;
 
 namespace ConnectPoints.Gameplay.Managers
 {
-    public class GameManager : MonoSingleton<GameManager>
+    public class DataManager : MonoSingleton<DataManager>
     {
         private static string LEVELS_PATH           => $"{Application.streamingAssetsPath}/level_data.json";
         private const string GAMEPLAY_SCENE_NAME    = "Gameplay";

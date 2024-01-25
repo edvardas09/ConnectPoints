@@ -21,7 +21,7 @@ namespace ConnectPoints.Gameplay.Managers
         [SerializeField] private float levelEndAnimationDuration = 0.5f;
         [SerializeField] private float delayBeforeLoadingMenuScene = 1f;
 
-        private List<PointData> pointDatas = new List<PointData>();
+        private List<PointData> pointDatas;
 
         private int selectedLevel;
         private int currentPointId;
@@ -30,11 +30,12 @@ namespace ConnectPoints.Gameplay.Managers
         public LevelManager()
         {
             currentPointId = 0;
+            pointDatas = new List<PointData>();
         }
 
         private void Start()
         {
-            if (GameManager.Instance == null)
+            if (DataManager.Instance == null)
             {
                 SceneManager.LoadScene(LEVEL_SELECTION_SCENE_NAME);
                 return;
@@ -55,7 +56,7 @@ namespace ConnectPoints.Gameplay.Managers
 
         private void LoadSelectedLevel()
         {
-            if (GameManager.Instance == null)
+            if (DataManager.Instance == null)
             {
                 return;
             }
@@ -65,9 +66,9 @@ namespace ConnectPoints.Gameplay.Managers
             maxSize -= paddingFromSides * 2;
 
             pointDatas.Clear();
-            selectedLevel = GameManager.Instance.SelectedLevel;
+            selectedLevel = DataManager.Instance.SelectedLevel;
 
-            List<int> _selectedLevelPointPositions = GameManager.Instance.Levels.LevelDataList[selectedLevel].PointPositions;
+            List<int> _selectedLevelPointPositions = DataManager.Instance.Levels.LevelDataList[selectedLevel].PointPositions;
             for (int i = 0; i < _selectedLevelPointPositions.Count; i++)
             {
                 int _pointPosition = _selectedLevelPointPositions[i];

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 using ConnectPoints.Gameplay.Level;
 
 namespace ConnectPoints.Gameplay.Managers
@@ -10,7 +9,7 @@ namespace ConnectPoints.Gameplay.Managers
     {
         public UnityAction OnLevelCompleted;
 
-        [SerializeField] private Image linePrefab;
+        [SerializeField] private SpriteRenderer linePrefab;
         [SerializeField] private Transform linesParent;
         [SerializeField] private Transform mainCanvas;
         [SerializeField] private LevelManager levelManager;
@@ -18,7 +17,12 @@ namespace ConnectPoints.Gameplay.Managers
 
         private Point firstPoint;
         private Point lastPoint;
-        private Queue<Point> pointsToDrawLineTo = new Queue<Point>();
+        private Queue<Point> pointsToDrawLineTo;
+
+        public LineManager()
+        {
+            pointsToDrawLineTo = new Queue<Point>();
+        }
 
         private void OnEnable()
         {
@@ -72,16 +76,20 @@ namespace ConnectPoints.Gameplay.Managers
 
         private void DrawLine(Point fromPoint, Point toPoint)
         {
-            Image _line = Instantiate(linePrefab, linesParent);
+            SpriteRenderer _line = Instantiate(linePrefab, linesParent);
             _line.transform.position = fromPoint.GetPosition();
 
             float _rotationToTarget = Vector2.SignedAngle(Vector2.up, toPoint.GetPosition() - fromPoint.GetPosition());
-            _line.rectTransform.rotation = Quaternion.Euler(0f, 0f, _rotationToTarget);
+            _line.transform.rotation = Quaternion.Euler(0f, 0f, _rotationToTarget);
 
-            float _lineSizeX = _line.rectTransform.sizeDelta.x;
-            float _lineSizeY = Vector2.Distance(toPoint.GetPosition(), fromPoint.GetPosition()) / mainCanvas.localScale.x;
+            float _lineSizeX = _line.size.x;
+            float _lineSizeY = Vector2.Distance(toPoint.GetPosition(), fromPoint.GetPosition());
             Vector2 _lineSize = new Vector2(_lineSizeX, _lineSizeY);
-            LeanTween.size(_line.rectTransform, _lineSize, lineDrawDuration).setEase(LeanTweenType.easeInOutQuad).setOnComplete(() =>
+            LeanTween.value(_line.gameObject, 0, _lineSizeY, lineDrawDuration).setEase(LeanTweenType.easeInOutQuad).setOnUpdate(newSizeY =>
+            {
+                Vector2 _newSize = new Vector2(_line.size.x, newSizeY);
+                _line.size = _newSize;
+            }).setOnComplete(() =>
             {
                 if (firstPoint == toPoint)
                 {
