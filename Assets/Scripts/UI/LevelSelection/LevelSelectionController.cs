@@ -1,8 +1,8 @@
-using ConnectPoints.Gameplay.LevelSelecion;
-using ConnectPoints.Gameplay.Managers;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using ConnectPoints.Gameplay.LevelSelecion;
+using ConnectPoints.Gameplay.Managers;
 
 namespace ConnectPoints.UI.LevelSelecion
 {

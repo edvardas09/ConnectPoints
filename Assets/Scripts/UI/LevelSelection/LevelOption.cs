@@ -1,7 +1,7 @@
-using ConnectPoints.Gameplay.Managers;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using ConnectPoints.Gameplay.Managers;
 
 namespace ConnectPoints.UI.LevelSelecion
 {

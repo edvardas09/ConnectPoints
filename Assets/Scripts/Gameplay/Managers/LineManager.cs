@@ -1,8 +1,8 @@
-using ConnectPoints.Gameplay.Level;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using ConnectPoints.Gameplay.Level;
 
 namespace ConnectPoints.Gameplay.Managers
 {
