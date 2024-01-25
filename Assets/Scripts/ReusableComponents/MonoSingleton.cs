@@ -18,6 +18,9 @@ namespace ConnectPoints
                 return;
             }
             Instance = this as T;
+
+            transform.SetParent(null);
+            DontDestroyOnLoad(gameObject);
         }
     }
 }
