@@ -1,16 +1,17 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.Events;
 
 namespace ConnectPoints.Gameplay.Level
 {
-    public class Point : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+    public class Point : MonoBehaviour
     {
+        private const int PRESSED_POINT_SORTING_ID = 10;
+
         public UnityAction<Point> OnPointClicked;
 
         [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private TextMeshProUGUI idText;
+        [SerializeField] private TextMeshPro idText;
         [SerializeField] private Sprite pressedSprite;
 
         [Header("Animation")]
@@ -29,6 +30,9 @@ namespace ConnectPoints.Gameplay.Level
             defaultScale = gameObject.transform.localScale;
 
             idText.text = $"{pointData.Id + 1}";
+
+            spriteRenderer.sortingOrder -= pointData.Id;
+            idText.sortingOrder -= pointData.Id;
         }
 
         public Vector3 GetPosition()
@@ -36,7 +40,7 @@ namespace ConnectPoints.Gameplay.Level
             return transform.position;
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        public void OnMouseExit()
         {
             if (isPressed)
             {
@@ -47,7 +51,7 @@ namespace ConnectPoints.Gameplay.Level
             LeanTween.scale(gameObject, defaultScale, scaleAnimationDuration);
         }
 
-        public void OnPointerEnter(PointerEventData eventData)
+        public void OnMouseEnter()
         {
             if (isPressed)
             {
@@ -58,7 +62,7 @@ namespace ConnectPoints.Gameplay.Level
             LeanTween.scale(gameObject, new Vector2(defaultScale.x + onHoverScaleIncrease, defaultScale.y + onHoverScaleIncrease), scaleAnimationDuration);
         }
 
-        public void OnPointerClick(PointerEventData _)
+        public void OnMouseDown()
         {
             OnPointClicked?.Invoke(this);
         }
@@ -71,7 +75,7 @@ namespace ConnectPoints.Gameplay.Level
             LeanTween.scale(gameObject, defaultScale, scaleAnimationDuration);
 
             spriteRenderer.sprite = pressedSprite;
-            spriteRenderer.sortingOrder--;
+            spriteRenderer.sortingOrder = PRESSED_POINT_SORTING_ID;
             idText.gameObject.SetActive(false);
         }
     }
