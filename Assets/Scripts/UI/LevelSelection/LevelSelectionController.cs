@@ -16,7 +16,7 @@ namespace ConnectPoints.UI.LevelSelecion
 
         [Header("Level option references")]
         [SerializeField] private LevelOption levelOptionPrefab;
-        [SerializeField] private Transform levelOptionsContainer;
+        [SerializeField] private GridLayoutGroup levelOptionsContainer;
 
         private int levelsPage = 0;
 
@@ -31,6 +31,7 @@ namespace ConnectPoints.UI.LevelSelecion
         private void Start()
         {
             levelDataList = DataManager.Instance.Levels.LevelDataList;
+            SetupLayoutProperties();
             SetLevelsPage(0);
         }
 
@@ -44,23 +45,6 @@ namespace ConnectPoints.UI.LevelSelecion
         {
             levelsLeftButton.onClick.RemoveListener(OnLevelsLeftButtonClicked);
             levelsRightButton.onClick.RemoveListener(OnLevelsRightButtonClicked);
-        }
-
-        private void SpawnLevelOptions()
-        {
-            DespawnLevelOptions();
-
-            spawnedLevelOptions.Clear();
-
-            int _startIndex = levelsPage * maxLevelsCount;
-            int _endIndex = Mathf.Min((levelsPage + 1) * maxLevelsCount, levelDataList.Count);
-
-            for (int i = _startIndex; i < _endIndex; i++)
-            {
-                LevelOption _levelOption = Instantiate(levelOptionPrefab, levelOptionsContainer);
-                spawnedLevelOptions.Add(_levelOption);
-                _levelOption.Setup(i);
-            }
         }
 
         private void DespawnLevelOptions()
@@ -88,10 +72,51 @@ namespace ConnectPoints.UI.LevelSelecion
             SetupLevelsButtons();
         }
 
+        private void SpawnLevelOptions()
+        {
+            DespawnLevelOptions();
+
+            spawnedLevelOptions.Clear();
+
+            int _startIndex = levelsPage * maxLevelsCount;
+            int _endIndex = Mathf.Min((levelsPage + 1) * maxLevelsCount, levelDataList.Count);
+
+            for (int i = _startIndex; i < _endIndex; i++)
+            {
+                LevelOption _levelOption = Instantiate(levelOptionPrefab, levelOptionsContainer.transform);
+                spawnedLevelOptions.Add(_levelOption);
+                _levelOption.Setup(i);
+            }
+        }
+
         private void SetupLevelsButtons()
         {
             levelsLeftButton.gameObject.SetActive(levelsPage > 0);
-            levelsRightButton.gameObject.SetActive(levelsPage < levelDataList.Count / maxLevelsCount);
+            levelsRightButton.gameObject.SetActive(levelsPage < levelDataList.Count - maxLevelsCount * (levelsPage + 1));
         }
+
+        private void SetupLayoutProperties()
+        {
+            RectTransform _levelsContainerRectTransform = (RectTransform)levelOptionsContainer.transform;
+
+            float _levelsContainerHeight = _levelsContainerRectTransform.rect.size.y - levelOptionsContainer.padding.vertical;
+            float _levelsContainerWidth = _levelsContainerRectTransform.rect.size.x - levelOptionsContainer.padding.horizontal;
+            Vector2 _cellSize = levelOptionsContainer.cellSize;
+            Vector2 _spacing = levelOptionsContainer.spacing;
+
+            int _maxAmountOfCellsHorizontally = Mathf.FloorToInt((_levelsContainerWidth - _cellSize.x) / (_cellSize.x + _spacing.x)) + 1;
+            int _maxAmountOfCellsVertically = Mathf.FloorToInt((_levelsContainerHeight - _cellSize.y) / (_cellSize.y + _spacing.y)) + 1;
+
+            float _spaceForSpacingHorizontally = _levelsContainerWidth - (_maxAmountOfCellsHorizontally * _cellSize.x);
+            float _newSpacingX = _spaceForSpacingHorizontally / (_maxAmountOfCellsHorizontally - 1);
+
+            float _spaceForSpacingVertically = _levelsContainerHeight - (_maxAmountOfCellsVertically * _cellSize.y);
+            float _newSpacingY = _spaceForSpacingVertically / (_maxAmountOfCellsVertically - 1);
+
+            levelOptionsContainer.spacing = new Vector2(_newSpacingX, _newSpacingY);
+
+            maxLevelsCount = _maxAmountOfCellsHorizontally * _maxAmountOfCellsVertically;
+        }
+
     }
 }

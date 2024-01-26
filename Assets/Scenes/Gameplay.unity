@@ -123,6 +123,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!223 &349261607 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 2826552331260922502, guid: f7c7a442b395a154296fec9276de6dcb, type: 3}
+  m_PrefabInstance: {fileID: 5541332084464998677}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &516813999
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,6 +461,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 860440704490725890, guid: f7c7a442b395a154296fec9276de6dcb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1697914593559550230, guid: f7c7a442b395a154296fec9276de6dcb, type: 3}
       propertyPath: m_Name
       value: MainGameplayCanvas
@@ -574,6 +583,10 @@ PrefabInstance:
       propertyPath: levelManager
       value: 
       objectReference: {fileID: 8322767404764133940}
+    - target: {fileID: 5394166012276425104, guid: 9eb829dfbd9bdb5419dbf7c0dca17785, type: 3}
+      propertyPath: mainCanvas
+      value: 
+      objectReference: {fileID: 349261607}
     - target: {fileID: 5394166012276425104, guid: 9eb829dfbd9bdb5419dbf7c0dca17785, type: 3}
       propertyPath: lineManager
       value: 
