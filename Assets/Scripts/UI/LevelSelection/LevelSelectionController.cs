@@ -86,7 +86,14 @@ namespace ConnectPoints.UI.LevelSelecion
                 LevelOption _levelOption = Instantiate(levelOptionPrefab, levelOptionsContainer.transform);
                 spawnedLevelOptions.Add(_levelOption);
                 _levelOption.Setup(i);
+                _levelOption.LevelOptionClicked += LevelSelected;
             }
+        }
+
+        private void LevelSelected(int level)
+        {
+            DataManager.Instance.SetSelectedLevel(level);
+            DataManager.Instance.LoadSelectedLevel();
         }
 
         private void SetupLevelsButtons()

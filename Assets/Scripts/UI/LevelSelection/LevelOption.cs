@@ -1,12 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using ConnectPoints.Gameplay.Managers;
+using UnityEngine.Events;
 
 namespace ConnectPoints.UI.LevelSelecion
 {
     public class LevelOption : MonoBehaviour
     {
+        public UnityAction<int> LevelOptionClicked;
+
         [SerializeField] private TextMeshProUGUI levelText;
         [SerializeField] private Button button;
 
@@ -30,8 +32,7 @@ namespace ConnectPoints.UI.LevelSelecion
 
         private void OnLevelSelected()
         {
-            DataManager.Instance.SetSelectedLevel(level);
-            DataManager.Instance.LoadSelectedLevel();
+            LevelOptionClicked?.Invoke(level);
         }
     }
 }
