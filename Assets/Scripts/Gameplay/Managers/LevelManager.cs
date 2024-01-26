@@ -16,6 +16,7 @@ namespace ConnectPoints.Gameplay.Managers
         [SerializeField] private Point pointPrefab;
         [SerializeField] private Transform pointsParent;
         [SerializeField] private GameObject levelCompletedObject;
+        [SerializeField] private Canvas mainCanvas;
         [SerializeField] private LineManager lineManager;
         [SerializeField] private float paddingFromSides = 1f;
         [SerializeField] private float levelEndAnimationDuration = 0.5f;
@@ -166,9 +167,11 @@ namespace ConnectPoints.Gameplay.Managers
 
         private void OnLevelCompleted()
         {
-            Vector3 _newPosition = levelCompletedObject.transform.position;
-            _newPosition.y = ((RectTransform)pointsParent.transform).sizeDelta.y * -1;
-            levelCompletedObject.transform.position = _newPosition;
+            float _mainCanvasHeight = ((RectTransform)mainCanvas.transform).sizeDelta.y;
+            Vector3 _newPosition = levelCompletedObject.transform.localPosition;
+            _newPosition.y = _mainCanvasHeight;
+
+            levelCompletedObject.transform.localPosition = _newPosition;
 
             levelCompletedObject.SetActive(true);
 
@@ -176,7 +179,7 @@ namespace ConnectPoints.Gameplay.Managers
                 .setEase(LeanTweenType.easeInOutQuad)
                 .setOnComplete(() =>
             {
-                LeanTween.moveLocalY(levelCompletedObject, ((RectTransform)pointsParent.transform).sizeDelta.y * -2, levelEndAnimationDuration)
+                LeanTween.moveLocalY(levelCompletedObject, _mainCanvasHeight, levelEndAnimationDuration)
                 .setEase(LeanTweenType.easeInOutQuad)
                 .setDelay(delayBeforeLoadingMenuScene)
                 .setOnComplete(() =>
