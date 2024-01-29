@@ -19,7 +19,7 @@ namespace ConnectPoints.UI.LevelSelecion
         [SerializeField] private LevelOption levelOptionPrefab;
         [SerializeField] private GridLayoutGroup levelOptionsContainer;
 
-        private const string GAMEPLAY_SCENE_NAME    = "Gameplay";
+        private const string GAMEPLAY_SCENE_NAME = "Gameplay";
 
         private int levelsPage = 0;
 

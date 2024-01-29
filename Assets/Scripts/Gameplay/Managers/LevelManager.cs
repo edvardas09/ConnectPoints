@@ -20,7 +20,7 @@ namespace ConnectPoints.Gameplay.Managers
         [SerializeField] private float delayBeforeLoadingMenuScene = 1f;
 
         private const string LEVEL_SELECTION_SCENE_NAME = "LevelSelection";
-        private const int POINT_POSITION_REF_SCALE = 1000;
+        private const int POINT_POSITION_REF_SCALE      = 1000;
 
         private List<PointData> pointDatas;
 
