@@ -10,9 +10,6 @@ namespace ConnectPoints.Gameplay.Managers
     {
         public UnityAction<Point> PointPressed;
 
-        private const string LEVEL_SELECTION_SCENE_NAME  = "LevelSelection";
-        private const int POINT_POSITION_REF_SCALE    = 1000;
-
         [SerializeField] private Point pointPrefab;
         [SerializeField] private Transform pointsParent;
         [SerializeField] private GameObject levelCompletedObject;
@@ -21,6 +18,9 @@ namespace ConnectPoints.Gameplay.Managers
         [SerializeField] private float paddingFromSides = 1f;
         [SerializeField] private float levelEndAnimationDuration = 0.5f;
         [SerializeField] private float delayBeforeLoadingMenuScene = 1f;
+
+        private const string LEVEL_SELECTION_SCENE_NAME = "LevelSelection";
+        private const int POINT_POSITION_REF_SCALE = 1000;
 
         private List<PointData> pointDatas;
 

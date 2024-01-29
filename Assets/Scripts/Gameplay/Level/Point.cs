@@ -6,8 +6,6 @@ namespace ConnectPoints.Gameplay.Level
 {
     public class Point : MonoBehaviour
     {
-        private const int PRESSED_POINT_SORTING_ID = 10;
-
         public UnityAction<Point> OnPointClicked;
 
         [SerializeField] private SpriteRenderer spriteRenderer;
@@ -17,6 +15,8 @@ namespace ConnectPoints.Gameplay.Level
         [Header("Animation")]
         [SerializeField] private float onHoverScaleIncrease = 0.1f;
         [SerializeField] private float scaleAnimationDuration = 0.2f;
+
+        private const int PRESSED_POINT_SORTING_ID = 10;
 
         public PointData PointData => pointData;
 

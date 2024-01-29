@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using ConnectPoints.Gameplay.LevelSelecion;
 using ConnectPoints.Managers;
 
@@ -7,8 +6,7 @@ namespace ConnectPoints.Gameplay.Managers
 {
     public class DataManager : MonoSingleton<DataManager>
     {
-        private static string LEVELS_PATH           => $"{Application.streamingAssetsPath}/level_data.json";
-        private const string GAMEPLAY_SCENE_NAME    = "Gameplay";
+        private static string LEVELS_PATH => $"{Application.streamingAssetsPath}/level_data.json";
 
         public int SelectedLevel => selectedLevel;
         public Levels Levels => levels;
@@ -38,9 +36,5 @@ namespace ConnectPoints.Gameplay.Managers
             selectedLevel = level;
         }
 
-        public void LoadSelectedLevel()
-        {
-            SceneManager.LoadScene(GAMEPLAY_SCENE_NAME, LoadSceneMode.Single);
-        }
     }
 }

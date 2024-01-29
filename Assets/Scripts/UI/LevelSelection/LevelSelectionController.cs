@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using ConnectPoints.Gameplay.LevelSelecion;
 using ConnectPoints.Gameplay.Managers;
+using UnityEngine.SceneManagement;
 
 namespace ConnectPoints.UI.LevelSelecion
 {
@@ -17,6 +18,8 @@ namespace ConnectPoints.UI.LevelSelecion
         [Header("Level option references")]
         [SerializeField] private LevelOption levelOptionPrefab;
         [SerializeField] private GridLayoutGroup levelOptionsContainer;
+
+        private const string GAMEPLAY_SCENE_NAME    = "Gameplay";
 
         private int levelsPage = 0;
 
@@ -93,7 +96,7 @@ namespace ConnectPoints.UI.LevelSelecion
         private void LevelSelected(int level)
         {
             DataManager.Instance.SetSelectedLevel(level);
-            DataManager.Instance.LoadSelectedLevel();
+            SceneManager.LoadScene(GAMEPLAY_SCENE_NAME, LoadSceneMode.Single);
         }
 
         private void SetupLevelsButtons()
