@@ -1,20 +1,21 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.Events;
+using System;
 
 namespace ConnectPoints.Gameplay.Level
 {
     public class Point : MonoBehaviour
     {
-        public UnityAction<Point> OnPointClicked;
-
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private TextMeshPro idText;
         [SerializeField] private Sprite pressedSprite;
+        [SerializeField] private BoxCollider2D boxCollider2D;
 
         [Header("Animation")]
         [SerializeField] private float onHoverScaleIncrease = 0.1f;
         [SerializeField] private float scaleAnimationDuration = 0.2f;
+
+        public Action<Point> PointClicked;
 
         private const int PRESSED_POINT_SORTING_ID = 10;
 
@@ -64,7 +65,7 @@ namespace ConnectPoints.Gameplay.Level
 
         public void OnMouseDown()
         {
-            OnPointClicked?.Invoke(this);
+            PointClicked?.Invoke(this);
         }
 
         public void PointPressed()
@@ -77,6 +78,7 @@ namespace ConnectPoints.Gameplay.Level
             spriteRenderer.sprite = pressedSprite;
             spriteRenderer.sortingOrder = PRESSED_POINT_SORTING_ID;
             idText.gameObject.SetActive(false);
+            boxCollider2D.enabled = false;
         }
     }
 }

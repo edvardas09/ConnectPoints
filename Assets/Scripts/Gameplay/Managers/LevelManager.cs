@@ -1,32 +1,33 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using ConnectPoints.Gameplay.Level;
+using System;
 
 namespace ConnectPoints.Gameplay.Managers
 {
     public class LevelManager : MonoBehaviour
     {
-        public UnityAction<Point> PointPressed;
-
         [SerializeField] private Point pointPrefab;
         [SerializeField] private Transform pointsParent;
         [SerializeField] private GameObject levelCompletedObject;
-        [SerializeField] private Canvas mainCanvas;
+        [SerializeField] private RectTransform mainCanvasRectTransform;
         [SerializeField] private LineManager lineManager;
         [SerializeField] private float paddingFromSides = 1f;
         [SerializeField] private float levelEndAnimationDuration = 0.5f;
         [SerializeField] private float delayBeforeLoadingMenuScene = 1f;
 
+        public Action<Point> PointPressed;
+
         private const string LEVEL_SELECTION_SCENE_NAME = "LevelSelection";
         private const int POINT_POSITION_REF_SCALE      = 1000;
+        private const float MAX_SIZE                    = 8;
+        private static readonly Vector2 TOP_RIGHT       = new Vector2(-4, 4);
 
         private List<PointData> pointDatas;
 
         private int selectedLevel;
         private int currentPointId;
-        private float maxSize;
 
         public LevelManager()
         {
@@ -47,12 +48,12 @@ namespace ConnectPoints.Gameplay.Managers
 
         private void OnEnable()
         {
-            lineManager.OnLevelCompleted += OnLevelCompleted;
+            lineManager.LevelCompleted += OnLevelCompleted;
         }
 
         private void OnDisable()
         {
-            lineManager.OnLevelCompleted -= OnLevelCompleted;
+            lineManager.LevelCompleted -= OnLevelCompleted;
         }
 
         private void LoadSelectedLevel()
@@ -61,10 +62,6 @@ namespace ConnectPoints.Gameplay.Managers
             {
                 return;
             }
-
-            Rect _screenRect = GetScreenWorldRect();
-            maxSize = _screenRect.height > _screenRect.width ? _screenRect.width : _screenRect.height;
-            maxSize -= paddingFromSides * 2;
 
             pointDatas.Clear();
             selectedLevel = DataManager.Instance.SelectedLevel;
@@ -106,27 +103,17 @@ namespace ConnectPoints.Gameplay.Managers
 
             _point.transform.position = _position;
             _point.Initialize(lastPointData);
-            _point.OnPointClicked += OnPointClicked;
+            _point.PointClicked += OnPointClicked;
         }
 
         private float ConvertPointPositionToScreenPosition(int pointPosition)
         {
-            return (float)pointPosition / POINT_POSITION_REF_SCALE * maxSize;
-        }
-
-        private Rect GetScreenWorldRect()
-        {
-            Camera camera = Camera.main;
-            Vector3 bottomLeft = camera.ViewportToWorldPoint(new Vector3(0f, 0f, 0f));
-            Vector3 topRight = camera.ViewportToWorldPoint(new Vector3(1f, 1f, 0f));
-            return (new Rect(bottomLeft.x, bottomLeft.y, topRight.x * 2f, topRight.y * 2f));
+            return (float)pointPosition / POINT_POSITION_REF_SCALE * MAX_SIZE;
         }
 
         private void UpdateParentPosition()
         {
-            float _halfMaxSize = maxSize / 2;
-            Vector2 _topRight = new Vector2(-_halfMaxSize, _halfMaxSize);
-            pointsParent.position = _topRight;
+            pointsParent.position = TOP_RIGHT;
         }
 
         private void OnPointClicked(Point point)
@@ -136,7 +123,7 @@ namespace ConnectPoints.Gameplay.Managers
                 return;
             }
 
-            point.OnPointClicked -= OnPointClicked;
+            point.PointClicked -= OnPointClicked;
             point.PointPressed();
 
             if (!IsLastPoint(point))
@@ -167,7 +154,7 @@ namespace ConnectPoints.Gameplay.Managers
 
         private void OnLevelCompleted()
         {
-            float _mainCanvasHeight = ((RectTransform)mainCanvas.transform).sizeDelta.y;
+            float _mainCanvasHeight = mainCanvasRectTransform.sizeDelta.y;
             Vector3 _newPosition = levelCompletedObject.transform.localPosition;
             _newPosition.y = _mainCanvasHeight;
 

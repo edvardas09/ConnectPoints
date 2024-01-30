@@ -4,7 +4,7 @@ using ConnectPoints.Managers;
 
 namespace ConnectPoints.Gameplay.Managers
 {
-    public class DataManager : MonoSingleton<DataManager>
+    public class DataManager : Singleton<DataManager>
     {
         private static string LEVELS_PATH => $"{Application.streamingAssetsPath}/level_data.json";
 
@@ -14,10 +14,15 @@ namespace ConnectPoints.Gameplay.Managers
         private int selectedLevel;
         private Levels levels;
 
-        protected override void Awake()
+        public DataManager()
         {
-            base.Awake();
+               selectedLevel = 0;
+            levels = new Levels();
+            Awake();
+        }
 
+        protected void Awake()
+        {
             levels = FilesManager.GetFileContent<Levels>(LEVELS_PATH);
             for (int i = 0; i < levels.LevelDataList.Count; i++)
             {

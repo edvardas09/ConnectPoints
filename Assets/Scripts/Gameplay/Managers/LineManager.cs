@@ -2,18 +2,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using ConnectPoints.Gameplay.Level;
+using System;
 
 namespace ConnectPoints.Gameplay.Managers
 {
     public class LineManager : MonoBehaviour
     {
-        public UnityAction OnLevelCompleted;
-
         [SerializeField] private SpriteRenderer linePrefab;
         [SerializeField] private Transform linesParent;
         [SerializeField] private Transform mainCanvas;
         [SerializeField] private LevelManager levelManager;
         [SerializeField] private float lineDrawDuration = 0.5f;
+
+        public Action LevelCompleted;
 
         private Point firstPoint;
         private Point lastPoint;
@@ -84,21 +85,23 @@ namespace ConnectPoints.Gameplay.Managers
 
             float _lineSizeX = _line.size.x;
             float _lineSizeY = Vector2.Distance(toPoint.GetPosition(), fromPoint.GetPosition());
-            Vector2 _lineSize = new Vector2(_lineSizeX, _lineSizeY);
-            LeanTween.value(_line.gameObject, 0, _lineSizeY, lineDrawDuration).setEase(LeanTweenType.easeInOutQuad).setOnUpdate(newSizeY =>
-            {
-                Vector2 _newSize = new Vector2(_line.size.x, newSizeY);
-                _line.size = _newSize;
-            }).setOnComplete(() =>
-            {
-                if (firstPoint == toPoint)
+            LeanTween.value(_line.gameObject, 0, _lineSizeY, lineDrawDuration)
+                .setEase(LeanTweenType.easeInOutQuad)
+                .setOnUpdate(newSizeY =>
                 {
-                    OnLevelCompleted?.Invoke();
-                    return;
-                }
+                    Vector2 _newSize = new Vector2(_line.size.x, newSizeY);
+                    _line.size = _newSize;
+                })
+                .setOnComplete(() =>
+                {
+                    if (firstPoint == toPoint)
+                    {
+                        LevelCompleted?.Invoke();
+                        return;
+                    }
 
-                DrawNewLine();
-            });
+                    DrawNewLine();
+                });
         }
     }
 }

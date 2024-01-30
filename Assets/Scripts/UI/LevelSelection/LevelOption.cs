@@ -1,16 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.Events;
+using System;
 
 namespace ConnectPoints.UI.LevelSelecion
 {
     public class LevelOption : MonoBehaviour
     {
-        public UnityAction<int> LevelOptionClicked;
-
         [SerializeField] private TextMeshProUGUI levelText;
         [SerializeField] private Button button;
+
+        public Action<int> LevelOptionClicked;
 
         private int level;
 
