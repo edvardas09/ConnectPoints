@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 294.30658, y: 0}
-  m_SizeDelta: {x: 588.61316, y: 0}
+  m_AnchoredPosition: {x: 293.60233, y: 0}
+  m_SizeDelta: {x: 587.20465, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &3034813055922019405
 MonoBehaviour:
@@ -111,8 +111,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -33}
-  m_SizeDelta: {x: -25.999996, y: -102}
+  m_AnchoredPosition: {x: 0, y: -32}
+  m_SizeDelta: {x: -31.999996, y: -104}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4694752575744475904
 CanvasRenderer:
@@ -633,9 +633,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b56212f39f6510408223ba52689838c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxLevelsCount: 8
-  levelsLeftButton: {fileID: 0}
-  levelsRightButton: {fileID: 0}
   levelOptionPrefab: {fileID: 4561356633631606103, guid: b1ce6e2c438a48745803c6fd65b0b1f9, type: 3}
   levelOptionsContainer: {fileID: 3034813055922019405}
 --- !u!1 &7767484360924765220
