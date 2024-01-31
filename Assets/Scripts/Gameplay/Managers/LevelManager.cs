@@ -83,10 +83,10 @@ namespace ConnectPoints.Gameplay.Managers
             Point _point = Instantiate(pointPrefab, pointsParent);
             _point.transform.SetAsFirstSibling();
 
-            Vector2 _position = new Vector2(
+            Vector3 _position = new Vector3(
                 ConvertPointPositionToScreenPosition(_lastPointData.PositionX),
-                ConvertPointPositionToScreenPosition(_lastPointData.PositionY) * -1
-                );
+                ConvertPointPositionToScreenPosition(_lastPointData.PositionY) * -1,
+                _point.transform.position.z);
 
             _point.transform.position = _position;
             _point.Initialize(_lastPointData);

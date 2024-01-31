@@ -17,7 +17,7 @@ namespace ConnectPoints.Gameplay.Level
 
         public Action<Point> PointClicked;
 
-        private const int PRESSED_POINT_SORTING_ID = 10;
+        private const int PRESSED_POINT_Z_POSITION = 500;
 
         public PointData PointData => pointData;
 
@@ -32,8 +32,7 @@ namespace ConnectPoints.Gameplay.Level
 
             idText.text = $"{_pointData.Id + 1}";
 
-            spriteRenderer.sortingOrder -= _pointData.Id;
-            idText.sortingOrder -= _pointData.Id;
+            transform.position = new Vector3(transform.position.x, transform.position.y, _pointData.Id);
         }
 
         public Vector3 GetPosition()
@@ -76,9 +75,9 @@ namespace ConnectPoints.Gameplay.Level
             LeanTween.scale(gameObject, defaultScale, scaleAnimationDuration);
 
             spriteRenderer.sprite = pressedSprite;
-            spriteRenderer.sortingOrder = PRESSED_POINT_SORTING_ID;
             idText.gameObject.SetActive(false);
             boxCollider2D.enabled = false;
+            transform.position = new Vector3(transform.position.x, transform.position.y, PRESSED_POINT_Z_POSITION);
         }
     }
 }
