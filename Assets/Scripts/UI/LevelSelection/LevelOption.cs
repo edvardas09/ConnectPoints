@@ -24,10 +24,10 @@ namespace ConnectPoints.UI.LevelSelecion
             button.onClick.RemoveListener(OnLevelSelected);
         }
 
-        public void Setup(int level)
+        public void Setup(int _level)
         {
-            this.level = level;
-            levelText.text = $"{level + 1}";
+            this.level = _level;
+            levelText.text = $"{_level + 1}";
         }
 
         private void OnLevelSelected()

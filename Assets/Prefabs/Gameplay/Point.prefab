@@ -270,6 +270,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 203338382938482989}
   idText: {fileID: 8763823856429722959}
   pressedSprite: {fileID: 21300000, guid: 8f91a6d2ca2912248bd60b661770307e, type: 3}
+  boxCollider2D: {fileID: 6330594679608553589}
   onHoverScaleIncrease: 0.1
   scaleAnimationDuration: 0.2
 --- !u!61 &6330594679608553589

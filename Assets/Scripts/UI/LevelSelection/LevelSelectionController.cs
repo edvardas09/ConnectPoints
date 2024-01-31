@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using ConnectPoints.Gameplay.LevelSelecion;
 using ConnectPoints.Gameplay.Managers;
 using UnityEngine.SceneManagement;
+using ConnectPoints.Enums;
 
 namespace ConnectPoints.UI.LevelSelecion
 {
@@ -19,21 +20,15 @@ namespace ConnectPoints.UI.LevelSelecion
         [SerializeField] private LevelOption levelOptionPrefab;
         [SerializeField] private GridLayoutGroup levelOptionsContainer;
 
-        private const string GAMEPLAY_SCENE_NAME = "Gameplay";
-
         private int levelsPage = 0;
 
-        private List<LevelOption> spawnedLevelOptions;
-        private List<LevelData> levelDataList;
-
-        public LevelSelectionController()
-        {
-            spawnedLevelOptions = new List<LevelOption>();
-        }
+        private List<LevelOption> spawnedLevelOptions = new List<LevelOption>();
+        private List<LevelData> levelDataList = new List<LevelData>();
 
         private void Start()
         {
             levelDataList = DataManager.Instance.Levels.LevelDataList;
+
             SetupLayoutProperties();
             SetLevelsPage(0);
         }
@@ -68,9 +63,9 @@ namespace ConnectPoints.UI.LevelSelecion
             SetLevelsPage(levelsPage - 1);
         }
 
-        private void SetLevelsPage(int page)
+        private void SetLevelsPage(int _page)
         {
-            levelsPage = Mathf.Clamp(page, 0, levelDataList.Count / maxLevelsCount);
+            levelsPage = Mathf.Clamp(_page, 0, levelDataList.Count / maxLevelsCount);
             SpawnLevelOptions();
             SetupLevelsButtons();
         }
@@ -89,14 +84,14 @@ namespace ConnectPoints.UI.LevelSelecion
                 LevelOption _levelOption = Instantiate(levelOptionPrefab, levelOptionsContainer.transform);
                 spawnedLevelOptions.Add(_levelOption);
                 _levelOption.Setup(i);
-                _levelOption.LevelOptionClicked += LevelSelected;
+                _levelOption.LevelOptionClicked += OnLevelSelected;
             }
         }
 
-        private void LevelSelected(int level)
+        private void OnLevelSelected(int _level)
         {
-            DataManager.Instance.SetSelectedLevel(level);
-            SceneManager.LoadScene(GAMEPLAY_SCENE_NAME, LoadSceneMode.Single);
+            DataManager.Instance.SetSelectedLevel(_level);
+            SceneManager.LoadScene(SceneName.Gameplay.ToString(), LoadSceneMode.Single);
         }
 
         private void SetupLevelsButtons()

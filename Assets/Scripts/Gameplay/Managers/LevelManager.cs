@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using ConnectPoints.Gameplay.Level;
 using System;
+using ConnectPoints.Enums;
 
 namespace ConnectPoints.Gameplay.Managers
 {
@@ -13,36 +14,22 @@ namespace ConnectPoints.Gameplay.Managers
         [SerializeField] private GameObject levelCompletedObject;
         [SerializeField] private RectTransform mainCanvasRectTransform;
         [SerializeField] private LineManager lineManager;
-        [SerializeField] private float paddingFromSides = 1f;
         [SerializeField] private float levelEndAnimationDuration = 0.5f;
         [SerializeField] private float delayBeforeLoadingMenuScene = 1f;
 
         public Action<Point> PointPressed;
 
-        private const string LEVEL_SELECTION_SCENE_NAME = "LevelSelection";
         private const int POINT_POSITION_REF_SCALE      = 1000;
         private const float MAX_SIZE                    = 8;
         private static readonly Vector2 TOP_RIGHT       = new Vector2(-4, 4);
 
-        private List<PointData> pointDatas;
+        private List<PointData> pointDataList = new List<PointData>();
 
         private int selectedLevel;
-        private int currentPointId;
-
-        public LevelManager()
-        {
-            currentPointId = 0;
-            pointDatas = new List<PointData>();
-        }
+        private int currentPointId = 0;
 
         private void Start()
         {
-            if (DataManager.Instance == null)
-            {
-                SceneManager.LoadScene(LEVEL_SELECTION_SCENE_NAME);
-                return;
-            }
-
             LoadSelectedLevel();
         }
 
@@ -63,7 +50,7 @@ namespace ConnectPoints.Gameplay.Managers
                 return;
             }
 
-            pointDatas.Clear();
+            pointDataList.Clear();
             selectedLevel = DataManager.Instance.SelectedLevel;
 
             List<int> _selectedLevelPointPositions = DataManager.Instance.Levels.LevelDataList[selectedLevel].PointPositions;
@@ -73,16 +60,16 @@ namespace ConnectPoints.Gameplay.Managers
 
                 if (i % 2 == 0)
                 {
-                    pointDatas.Add(new PointData
+                    pointDataList.Add(new PointData
                     {
-                        Id = pointDatas.Count,
+                        Id = pointDataList.Count,
                         PositionX = _pointPosition,
                         PositionY = 0
                     });
                     continue;
                 }
 
-                PointData _lastPointData = pointDatas[pointDatas.Count - 1];
+                PointData _lastPointData = pointDataList[pointDataList.Count - 1];
                 _lastPointData.PositionY = _pointPosition;
 
                 SpawnPoint(_lastPointData);
@@ -91,24 +78,24 @@ namespace ConnectPoints.Gameplay.Managers
             UpdateParentPosition();
         }
 
-        private void SpawnPoint(PointData lastPointData)
+        private void SpawnPoint(PointData _lastPointData)
         {
             Point _point = Instantiate(pointPrefab, pointsParent);
             _point.transform.SetAsFirstSibling();
 
             Vector2 _position = new Vector2(
-                ConvertPointPositionToScreenPosition(lastPointData.PositionX),
-                ConvertPointPositionToScreenPosition(lastPointData.PositionY) * -1
+                ConvertPointPositionToScreenPosition(_lastPointData.PositionX),
+                ConvertPointPositionToScreenPosition(_lastPointData.PositionY) * -1
                 );
 
             _point.transform.position = _position;
-            _point.Initialize(lastPointData);
+            _point.Initialize(_lastPointData);
             _point.PointClicked += OnPointClicked;
         }
 
-        private float ConvertPointPositionToScreenPosition(int pointPosition)
+        private float ConvertPointPositionToScreenPosition(int _pointPosition)
         {
-            return (float)pointPosition / POINT_POSITION_REF_SCALE * MAX_SIZE;
+            return (float)_pointPosition / POINT_POSITION_REF_SCALE * MAX_SIZE;
         }
 
         private void UpdateParentPosition()
@@ -116,17 +103,17 @@ namespace ConnectPoints.Gameplay.Managers
             pointsParent.position = TOP_RIGHT;
         }
 
-        private void OnPointClicked(Point point)
+        private void OnPointClicked(Point _point)
         {
-            if (!IsCorrectPointPressed(point))
+            if (!IsCorrectPointPressed(_point))
             {
                 return;
             }
 
-            point.PointClicked -= OnPointClicked;
-            point.PointPressed();
+            _point.PointClicked -= OnPointClicked;
+            _point.PointPressed();
 
-            if (!IsLastPoint(point))
+            if (!IsLastPoint(_point))
             {
                 return;
             }
@@ -134,19 +121,19 @@ namespace ConnectPoints.Gameplay.Managers
             lineManager.AddLastPointToDrawLine();
         }
 
-        private bool IsLastPoint(Point point)
+        private bool IsLastPoint(Point _point)
         {
-            return pointDatas.Count - 1 == point.PointData.Id;
+            return pointDataList.Count - 1 == _point.PointData.Id;
         }
 
-        private bool IsCorrectPointPressed(Point point)
+        private bool IsCorrectPointPressed(Point _point)
         {
-            bool _isCorrectPointPressed = point.PointData.Id == currentPointId;
+            bool _isCorrectPointPressed = _point.PointData.Id == currentPointId;
 
             if (_isCorrectPointPressed)
             {
                 currentPointId++;
-                PointPressed?.Invoke(point);
+                PointPressed?.Invoke(_point);
             }
 
             return _isCorrectPointPressed;
@@ -165,15 +152,15 @@ namespace ConnectPoints.Gameplay.Managers
             LeanTween.moveLocalY(levelCompletedObject, 0f, levelEndAnimationDuration)
                 .setEase(LeanTweenType.easeInOutQuad)
                 .setOnComplete(() =>
-            {
-                LeanTween.moveLocalY(levelCompletedObject, _mainCanvasHeight, levelEndAnimationDuration)
-                .setEase(LeanTweenType.easeInOutQuad)
-                .setDelay(delayBeforeLoadingMenuScene)
-                .setOnComplete(() =>
                 {
-                    SceneManager.LoadScene(LEVEL_SELECTION_SCENE_NAME, LoadSceneMode.Single);
+                    LeanTween.moveLocalY(levelCompletedObject, _mainCanvasHeight, levelEndAnimationDuration)
+                    .setEase(LeanTweenType.easeInOutQuad)
+                    .setDelay(delayBeforeLoadingMenuScene)
+                    .setOnComplete(() =>
+                    {
+                        SceneManager.LoadScene(SceneName.LevelSelection.ToString(), LoadSceneMode.Single);
+                    });
                 });
-            });
         }
 
     }

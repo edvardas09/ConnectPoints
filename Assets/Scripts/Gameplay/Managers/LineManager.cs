@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using ConnectPoints.Gameplay.Level;
 using System;
 
@@ -18,12 +17,7 @@ namespace ConnectPoints.Gameplay.Managers
 
         private Point firstPoint;
         private Point lastPoint;
-        private Queue<Point> pointsToDrawLineTo;
-
-        public LineManager()
-        {
-            pointsToDrawLineTo = new Queue<Point>();
-        }
+        private readonly Queue<Point> pointsToDrawLineTo = new Queue<Point>();
 
         private void OnEnable()
         {
@@ -40,21 +34,21 @@ namespace ConnectPoints.Gameplay.Managers
             pointsToDrawLineTo.Enqueue(firstPoint);
         }
 
-        private void OnPointClicked(Point point)
+        private void OnPointClicked(Point _point)
         {
-            if (point == null)
+            if (_point == null)
             {
                 return;
             }
 
             if (firstPoint == null)
             {
-                firstPoint = point;
-                lastPoint = point;
+                firstPoint = _point;
+                lastPoint = _point;
                 return;
             }
 
-            pointsToDrawLineTo.Enqueue(point);
+            pointsToDrawLineTo.Enqueue(_point);
 
             if (pointsToDrawLineTo.Count == 1)
             {
@@ -69,39 +63,45 @@ namespace ConnectPoints.Gameplay.Managers
                 return;
             }
 
-            Point _point = pointsToDrawLineTo.Dequeue();
+            Point _point = pointsToDrawLineTo.Peek();
             DrawLine(lastPoint, _point);
 
             lastPoint = _point;
         }
 
-        private void DrawLine(Point fromPoint, Point toPoint)
+        private void DrawLine(Point _fromPoint, Point _toPoint)
         {
             SpriteRenderer _line = Instantiate(linePrefab, linesParent);
-            _line.transform.position = fromPoint.GetPosition();
+            _line.transform.position = _fromPoint.GetPosition();
 
-            float _rotationToTarget = Vector2.SignedAngle(Vector2.up, toPoint.GetPosition() - fromPoint.GetPosition());
+            float _rotationToTarget = Vector2.SignedAngle(Vector2.up, _toPoint.GetPosition() - _fromPoint.GetPosition());
             _line.transform.rotation = Quaternion.Euler(0f, 0f, _rotationToTarget);
 
             float _lineSizeX = _line.size.x;
-            float _lineSizeY = Vector2.Distance(toPoint.GetPosition(), fromPoint.GetPosition());
+            float _lineSizeY = Vector2.Distance(_toPoint.GetPosition(), _fromPoint.GetPosition());
             LeanTween.value(_line.gameObject, 0, _lineSizeY, lineDrawDuration)
                 .setEase(LeanTweenType.easeInOutQuad)
-                .setOnUpdate(newSizeY =>
+                .setOnUpdate(_newSizeY =>
                 {
-                    Vector2 _newSize = new Vector2(_line.size.x, newSizeY);
+                    Vector2 _newSize = new Vector2(_line.size.x, _newSizeY);
                     _line.size = _newSize;
                 })
-                .setOnComplete(() =>
-                {
-                    if (firstPoint == toPoint)
-                    {
-                        LevelCompleted?.Invoke();
-                        return;
-                    }
+                .setOnComplete(DrawNextLine);
 
-                    DrawNewLine();
-                });
+            return;
+
+            void DrawNextLine()
+            {
+                pointsToDrawLineTo.Dequeue();
+
+                if (firstPoint == _toPoint)
+                {
+                    LevelCompleted?.Invoke();
+                    return;
+                }
+
+                DrawNewLine();
+            }
         }
     }
 }

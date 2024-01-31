@@ -132,7 +132,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 153788519}
-  - component: {fileID: 153788518}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -140,18 +139,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &153788518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 153788517}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 617bd9986e8bcef4bb6937b31d44fa1c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &153788519
 Transform:
   m_ObjectHideFlags: 0
@@ -349,6 +336,10 @@ PrefabInstance:
       propertyPath: m_CellSize.y
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 6097212237227928687, guid: d1704afaaee4a4448b72b8057802a54e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 78.200195
+      objectReference: {fileID: 0}
     - target: {fileID: 6885629912261574549, guid: d1704afaaee4a4448b72b8057802a54e, type: 3}
       propertyPath: maxLevelsCount
       value: 9
@@ -357,6 +348,10 @@ PrefabInstance:
       propertyPath: levelOptionsContainer
       value: 
       objectReference: {fileID: 1159604221}
+    - target: {fileID: 8053795765247924504, guid: d1704afaaee4a4448b72b8057802a54e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -33.049805
+      objectReference: {fileID: 0}
     - target: {fileID: 9025083668560049281, guid: d1704afaaee4a4448b72b8057802a54e, type: 3}
       propertyPath: m_Pivot.x
       value: 0

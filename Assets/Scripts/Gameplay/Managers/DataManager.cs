@@ -11,17 +11,15 @@ namespace ConnectPoints.Gameplay.Managers
         public int SelectedLevel => selectedLevel;
         public Levels Levels => levels;
 
-        private int selectedLevel;
-        private Levels levels;
+        private int selectedLevel = 0;
+        private Levels levels = new Levels();
 
         public DataManager()
         {
-               selectedLevel = 0;
-            levels = new Levels();
-            Awake();
+            LoadLevels();
         }
 
-        protected void Awake()
+        protected void LoadLevels()
         {
             levels = FilesManager.GetFileContent<Levels>(LEVELS_PATH);
             for (int i = 0; i < levels.LevelDataList.Count; i++)
@@ -36,9 +34,9 @@ namespace ConnectPoints.Gameplay.Managers
             }
         }
 
-        public void SetSelectedLevel(int level)
+        public void SetSelectedLevel(int _level)
         {
-            selectedLevel = level;
+            selectedLevel = _level;
         }
 
     }

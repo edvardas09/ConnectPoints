@@ -603,6 +603,10 @@ PrefabInstance:
       propertyPath: levelCompletedObject
       value: 
       objectReference: {fileID: 1172236084}
+    - target: {fileID: 5394166012276425104, guid: 9eb829dfbd9bdb5419dbf7c0dca17785, type: 3}
+      propertyPath: mainCanvasRectTransform
+      value: 
+      objectReference: {fileID: 8154390722610287607}
     - target: {fileID: 7268217164222221481, guid: 9eb829dfbd9bdb5419dbf7c0dca17785, type: 3}
       propertyPath: m_Name
       value: GameplayManagers

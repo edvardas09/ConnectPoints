@@ -25,15 +25,15 @@ namespace ConnectPoints.Gameplay.Level
         private bool isPressed;
         private Vector2 defaultScale;
 
-        public void Initialize(PointData pointData)
+        public void Initialize(PointData _pointData)
         {
-            this.pointData = pointData;
+            this.pointData = _pointData;
             defaultScale = gameObject.transform.localScale;
 
-            idText.text = $"{pointData.Id + 1}";
+            idText.text = $"{_pointData.Id + 1}";
 
-            spriteRenderer.sortingOrder -= pointData.Id;
-            idText.sortingOrder -= pointData.Id;
+            spriteRenderer.sortingOrder -= _pointData.Id;
+            idText.sortingOrder -= _pointData.Id;
         }
 
         public Vector3 GetPosition()
